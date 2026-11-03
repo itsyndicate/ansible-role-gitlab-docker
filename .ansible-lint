@@ -1,0 +1,8 @@
+---
+profile: production
+exclude_paths:
+  # Playbooks there expect the role to be installed as gitlab.
+  - examples/
+  - tests/
+mock_modules:
+  - community.docker.docker_compose_v2
