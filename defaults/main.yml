@@ -1,0 +1,43 @@
+---
+# Hostname users open in the browser. DNS must point to the server.
+gitlab_hostname: gitlab.example.com
+
+# With https://, GitLab gets a Let's Encrypt certificate on its own.
+# Ports 80 and 443 must be reachable from the internet for that.
+gitlab_external_url: "https://{{ gitlab_hostname }}"
+
+# Optional container registry, for example https://registry.example.com.
+# With https://, its hostname is added to the same certificate.
+gitlab_registry_external_url: ""
+
+# Pin a version in production. Tags: https://hub.docker.com/r/gitlab/gitlab-ce/tags
+gitlab_version: "19.5.3-ce.0"
+gitlab_image: "gitlab/gitlab-ce:{{ gitlab_version }}"
+
+# Where config, logs and data live on the host.
+gitlab_home: /srv/gitlab
+
+# Host ports. GitLab SSH takes 22, so move the server's own SSH first
+# or set this to another port, for example 2424.
+gitlab_http_port: 80
+gitlab_https_port: 443
+gitlab_ssh_port: 22
+
+gitlab_time_zone: UTC
+gitlab_letsencrypt_contact_email: ""
+gitlab_email_from: ""
+gitlab_email_display_name: ""
+gitlab_email_reply_to: ""
+
+# Extra gitlab.rb lines, for example SMTP settings.
+gitlab_extra_config: ""
+
+gitlab_shm_size: 256m
+
+# Install Docker Engine from Docker's apt repository.
+gitlab_install_docker: true
+
+# Wait until GitLab answers on /-/readiness. First start takes a few minutes.
+gitlab_wait_ready: true
+gitlab_wait_retries: 90
+gitlab_wait_delay: 10

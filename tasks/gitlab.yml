@@ -1,0 +1,48 @@
+---
+- name: Create the GitLab directory
+  ansible.builtin.file:
+    path: "{{ gitlab_home }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Write the Compose file
+  ansible.builtin.template:
+    src: compose.yml.j2
+    dest: "{{ gitlab_home }}/compose.yml"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Start GitLab
+  community.docker.docker_compose_v2:
+    project_src: "{{ gitlab_home }}"
+    state: present
+    pull: missing
+
+# The image healthcheck reports "healthy" before the first reconfigure
+# finishes, and services restart at the end of it. So wait until
+# reconfigure (cinc-client) is done and /-/readiness answers 200.
+# -k: the Let's Encrypt certificate may not be issued yet.
+- name: Wait until GitLab answers
+  ansible.builtin.command:
+    cmd: >-
+      docker exec gitlab sh -c
+      "pgrep -f '[c]inc-client' >/dev/null && echo reconfiguring ||
+      curl -sk -o /dev/null -w '%{http_code}'
+      {{ gitlab_external_url | urlsplit('scheme') }}://localhost/-/readiness"
+  register: gitlab_readiness
+  until: gitlab_readiness.stdout == '200'
+  retries: "{{ gitlab_wait_retries }}"
+  delay: "{{ gitlab_wait_delay }}"
+  changed_when: false
+  when: gitlab_wait_ready | bool
+
+- name: Show how to sign in
+  ansible.builtin.debug:
+    msg:
+      - "GitLab is running at {{ gitlab_external_url }}"
+      - "Username: root"
+      - "Password: sudo docker exec gitlab grep 'Password:' /etc/gitlab/initial_root_password"
+      - "The password file is deleted on the first container restart after 24 hours. Change the password after you sign in."

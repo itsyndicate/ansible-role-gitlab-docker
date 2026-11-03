@@ -1,0 +1,39 @@
+# {{ ansible_managed }}
+services:
+  gitlab:
+    image: {{ gitlab_image }}
+    container_name: gitlab
+    restart: always
+    hostname: {{ gitlab_hostname }}
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url '{{ gitlab_external_url }}'
+        gitlab_rails['gitlab_shell_ssh_port'] = {{ gitlab_ssh_port }}
+        gitlab_rails['time_zone'] = '{{ gitlab_time_zone }}'
+{% if gitlab_registry_external_url %}
+        registry_external_url '{{ gitlab_registry_external_url }}'
+{% endif %}
+{% if gitlab_letsencrypt_contact_email %}
+        letsencrypt['contact_emails'] = ['{{ gitlab_letsencrypt_contact_email }}']
+{% endif %}
+{% if gitlab_email_from %}
+        gitlab_rails['gitlab_email_from'] = '{{ gitlab_email_from }}'
+{% endif %}
+{% if gitlab_email_display_name %}
+        gitlab_rails['gitlab_email_display_name'] = '{{ gitlab_email_display_name }}'
+{% endif %}
+{% if gitlab_email_reply_to %}
+        gitlab_rails['gitlab_email_reply_to'] = '{{ gitlab_email_reply_to }}'
+{% endif %}
+{% if gitlab_extra_config %}
+        {{ gitlab_extra_config | trim | indent(8) }}
+{% endif %}
+    ports:
+      - "{{ gitlab_http_port }}:80"
+      - "{{ gitlab_https_port }}:443"
+      - "{{ gitlab_ssh_port }}:22"
+    volumes:
+      - ./config:/etc/gitlab
+      - ./logs:/var/log/gitlab
+      - ./data:/var/opt/gitlab
+    shm_size: {{ gitlab_shm_size }}

@@ -1,0 +1,10 @@
+---
+roles:
+  - name: gitlab
+    src: https://github.com/itsyndicate/ansible-role-gitlab-docker.git
+    scm: git
+    version: main
+
+collections:
+  - name: community.docker
+    version: ">=4.0.0"

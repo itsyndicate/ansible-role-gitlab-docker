@@ -1,0 +1,14 @@
+---
+- name: Check that the target is a supported Ubuntu release
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == 'Ubuntu'
+      - ansible_facts['distribution_major_version'] is version('22', '>=')
+    fail_msg: This role supports Ubuntu 22.04 LTS and newer.
+
+- name: Install Docker Engine
+  ansible.builtin.include_tasks: docker.yml
+  when: gitlab_install_docker | bool
+
+- name: Deploy GitLab
+  ansible.builtin.include_tasks: gitlab.yml

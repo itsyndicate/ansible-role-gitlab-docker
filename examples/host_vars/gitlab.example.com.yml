@@ -1,0 +1,9 @@
+---
+gitlab_hostname: gitlab.example.com
+gitlab_external_url: https://gitlab.example.com
+gitlab_registry_external_url: https://registry.example.com
+gitlab_letsencrypt_contact_email: admin@example.com
+gitlab_time_zone: Europe/Kyiv
+gitlab_email_from: gitlab@example.com
+gitlab_email_display_name: GitLab
+gitlab_email_reply_to: noreply@example.com

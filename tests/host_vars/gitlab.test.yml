@@ -1,0 +1,4 @@
+---
+gitlab_hostname: gitlab.test
+gitlab_external_url: http://gitlab.test
+gitlab_time_zone: Europe/Kyiv

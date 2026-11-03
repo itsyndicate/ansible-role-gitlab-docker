@@ -1,0 +1,13 @@
+# Ubuntu 24.04 with systemd and socket-activated SSH, close to a cloud VM.
+FROM ubuntu:24.04
+ENV container=docker
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y systemd systemd-sysv openssh-server sudo python3 ufw iproute2 curl \
+ && apt-get clean \
+ && systemctl enable ssh.socket \
+ && useradd -m -s /bin/bash -G sudo deploy \
+ && echo 'deploy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/deploy
+COPY .work/id_test.pub /home/deploy/.ssh/authorized_keys
+RUN chown -R deploy:deploy /home/deploy/.ssh && chmod 700 /home/deploy/.ssh && chmod 600 /home/deploy/.ssh/authorized_keys
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]

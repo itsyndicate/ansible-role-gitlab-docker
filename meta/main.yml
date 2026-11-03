@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: gitlab
+  namespace: itsyndicate
+  author: ITSyndicate
+  description: Install Docker Engine and run GitLab CE in a container with Docker Compose.
+  license: MIT
+  min_ansible_version: "2.18"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - gitlab
+    - docker
+    - compose
+dependencies: []
